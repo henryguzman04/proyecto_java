@@ -3,18 +3,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class proveedorDAO {
-    public static void crear_proveedorDB(proveedor proveedores) {
+public class empleadoDAO {
+    public static void crear_empleadoDB(empleado empl) {
 
         Conexion db_connect = new Conexion();
         try (Connection conexion = db_connect.get_conConnection()) {
             PreparedStatement ps = null;
             try {
-                String query = "INSERT INTO `farmacia_sql`.`proveedor` (`nombre`, `direccion`, `telefono`) VALUES (?, ?, ?)";
+                String query = "INSERT INTO `farmacia_sql`.`empleado` (`nombre`,`apellido1`,`apellido2` ,`direccion`, `telefono_empleado`,`salario`) VALUES (?, ?, ?,?,?,?)";
                 ps = conexion.prepareStatement(query);
-                ps.setString(1, proveedores.getNombre());
-                ps.setString(2, proveedores.getDireccion());
-                ps.setInt(3, proveedores.getTelefono());
+                ps.setString(1, empl.getNombre());
+                ps.setString(2,empl.getApellido1());
+                ps.setString(3,empl.getApellido2());
+                ps.setString(4,empl.getDireccion());
+                ps.setInt(5, empl.getTelefono_empleado());
+                ps.setFloat(6,empl.getSalario());
                 ps.executeUpdate();
             } catch (SQLException ex) {
                 System.out.println(ex);
@@ -27,20 +30,23 @@ public class proveedorDAO {
     }
 
 
-    public static void leer_proveedor() {
+    public static void leer_empleado() {
         Conexion Db_conexion = new Conexion();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try (Connection conexion = Db_conexion.get_conConnection()) {
-            String query = "SELECT * FROM proveedor";
+            String query = "SELECT * FROM empleado";
             ps = conexion.prepareStatement(query);
             rs = ps.executeQuery();
             while (rs.next()) {
                 System.out.println("-----------------------------------");
                 System.out.println("id: " + rs.getInt("id"));
                 System.out.println("nombre: " + rs.getString("nombre"));
+                System.out.println("apellido1: "+rs.getString("apellido1"));
+                System.out.println("apellido2: "+rs.getString("apellido2"));
                 System.out.println("direccion: " + rs.getString("direccion"));
-                System.out.println("telefono: " + rs.getInt("telefono"));
+                System.out.println("telefono_empleado: " + rs.getInt("telefono_empleado"));
+                System.out.println("salario: "+rs.getFloat("salario"));
 
             }
 
@@ -50,12 +56,12 @@ public class proveedorDAO {
     }
 
 
-    public static void borrar_proveedor(int id) {
+    public static void borrar_empleado(int id) {
         Conexion conexion_he = new Conexion();
         try (Connection conexion = conexion_he.get_conConnection()) {
             PreparedStatement ps =null;
             try{
-                String query ="DELETE FROM proveedor WHERE id= ?";
+                String query ="DELETE FROM empleado WHERE id= ?";
                 ps= conexion.prepareStatement(query);
                 ps.setInt(1,id);
                 ps.executeUpdate();
@@ -71,17 +77,20 @@ public class proveedorDAO {
 
     }
 
-    public static void actualizar_proveedor(proveedor proveedores) {
+    public static void actualizar_empleado(empleado empl) {
         Conexion conexion_h = new Conexion();
         try (Connection conexion = conexion_h.get_conConnection()) {
             PreparedStatement pps;
             try{
-                String query ="UPDATE proveedor SET nombre= ? ,direccion=?,telefono=? where id=?";
+                String query ="UPDATE empleado SET nombre= ? ,apellido1=?,apellido2=?,direccion=?,telefono_empleado=? ,salario=? where id=?";
                 pps=conexion.prepareStatement(query);
-                pps.setString(1, proveedores.getNombre());
-                pps.setString(2, proveedores.getDireccion());
-                pps.setInt(3,proveedores.getTelefono());
-                pps.setInt(4,proveedores.getId());
+                pps.setString(1, empl.getNombre());
+                pps.setString(2,empl.getApellido1());
+                pps.setString(3,empl.getApellido2());
+                pps.setString(4,empl.getDireccion());
+                pps.setInt(5,empl.getTelefono_empleado());
+                pps.setFloat(6,empl.getSalario());
+                pps.setInt(7,empl.getId());
                 pps.executeUpdate();
                 System.out.println("los datos se actualizaron correctamente....");
 
@@ -93,6 +102,4 @@ public class proveedorDAO {
         }
 
     }
-
-
 }
